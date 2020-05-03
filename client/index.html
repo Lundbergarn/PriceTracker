@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Price tracker</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div id="page-container">
+      <header>
+        <h1 class="header">- Price Tracker -</h1>
+      </header>
+
+      <main id="content-wrap">
+        <h2>Add a product to track</h2>
+        <p>Easy search in secounds</p>
+        <form #form>
+          <label for="url">Product URL</label>
+          <input
+            id="url"
+            type="text"
+            name="product-url"
+            value="https://www.komplett.se/product/1157747/mobil-klockor/mobiltelefoner/apple-iphone-se-128gb-svart"
+          />
+          <label for="price">Target price</label>
+          <input
+            type="number"
+            min="0"
+            id="price"
+            name="target-price"
+            value="6500"
+          />
+          <label for="email">Your Email</label>
+          <input
+            type="email"
+            id="email"
+            name="your-email"
+            value="Lundberg@gmail.com"
+          />
+          <button id="submit">Start tracking price</button>
+        </form>
+        <div class="container">
+          <section id="output"></section>
+        </div>
+      </main>
+
+      <footer id="footer"><span>Examensarbete Front18</span></footer>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
