@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const scrapers = require('../scrapers');
+const mail = require('../mail');
 let Search = require('../models/search.model');
 
 router.route('/search').get(async (req, res) => {
@@ -12,23 +13,32 @@ router.route('/search').get(async (req, res) => {
 });
 
 router.route('/search').post(async (req, res) => {
-  console.log('started scrape')
   const { url, targetPrice, email } = req.body;
 
-  let channelData = await scrapers.scrapeChannel(url, targetPrice)
+  if (!url, !targetPrice, !email) {
+    res.status(500).send({ message: "Missing data" });
+    return;
+  }
 
-  channelData.price = formatPriceNumber(channelData.price);
+  let channelData = await scrapers.scrapePage(url, targetPrice);
 
-  if (+targetPrice >= channelData.price) {
-    res.status(200).send({ message: "Price already achieved" });
+  if (channelData === undefined) {
+    res.status(500).send({ message: "Couldn't return any data on search." });
+    return;
+  }
+
+  channelData.price = formatPrice(channelData.price);
+
+  if (targetPrice >= channelData.price) {
+    res.status(200).send({ message: "Price already achieved." });
   } else {
     const newSearch = new Search({ url, targetPrice, email });
+
     try {
       await newSearch.save();
-      console.log('saved')
       res.send(channelData);
+
     } catch (error) {
-      console.log(error)
       res.status(400).send(error);
     }
   }
@@ -36,43 +46,29 @@ router.route('/search').post(async (req, res) => {
 
 module.exports = router;
 
-// Format numbers 
-formatPriceNumber = (price) => {
+formatPrice = (price) => {
   let formatPrice = price.split('');
 
-  formatPrice = formatPrice.filter(el => {
-    return parseInt(el) >= 0;
-  });
+  formatPrice = formatPrice.filter(num => (parseInt(num) >= 0 || num === '.') ? true : false);
 
-  return formatPrice.join('');
+  return parseFloat(formatPrice.join(''));
 }
 
-// Set up interval 
-intervalSearch = () => {
-  setInterval(async () => {
-    const searches = await Search.find({});
+scrapeWebPage = async (url, searchPrice, email, id) => {
+  let channelData = await scrapers.scrapePage(url, searchPrice);
 
-    searches.forEach(async (s) => {
-      console.log('Checking price for ', s.email);
-      await searchWeb(s.url, s.targetPrice, s.email, s._id);
-    })
-  }, 43200000);
-}
+  const currentPrice = formatPrice(channelData.price);
+  const productName = channelData.name;
 
+  // Should be bigger than, less than for demo purpose
+  if (searchPrice <= currentPrice) {
+    console.log('Send mail to ', email);
+    mail.sendMail(productName.trim(), currentPrice, searchPrice, email, url);
 
-// Use in time loop with database data 
-searchWeb = async (url, searchPrice, email, id) => {
-  let channelData = await scrapers.scrapeChannel(url, searchPrice)
-
-  const formatPrice = formatPriceNumber(channelData.price);
-
-  if (searchPrice >= formatPrice) {
-    console.log('Target price ', searchPrice, ' reached for user ', email)
-    // sendMail(channelData.name, channelData.price, URL);
-    // Remove from database 
     try {
-      const searches = await Kvitto.findOneAndDelete({ _id: id });
+      const searches = await Search.findOneAndDelete({ _id: id });
       console.log('Removed ', id);
+
     } catch (error) {
       console.log(error)
     }
@@ -82,4 +78,25 @@ searchWeb = async (url, searchPrice, email, id) => {
   }
 }
 
-intervalSearch();
+// Set up interval 
+startIntervalScrape = () => {
+  setInterval(async () => {
+    const searches = await Search.find({});
+
+    for (let i = 0; i < searches.length; i++) {
+      try {
+        const { url, targetPrice, email, _id } = searches[i];
+        console.log('Checking price for ', email, '- Target price ', targetPrice);
+
+        await scrapeWebPage(url, targetPrice, email, _id);
+
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    // }, 43200000);
+  }, 20000);
+  // Shorter interval for demo purpose
+}
+
+startIntervalScrape();

@@ -4,48 +4,55 @@ function submitSearch(e) {
   e.preventDefault();
 
   const url = document.querySelector("#url").value;
-  const targetPrice = document.querySelector("#price").value;
+  let targetPrice = document.querySelector("#price").value;
   const email = document.querySelector("#email").value;
+  const errorUrl = document.querySelector("#error-url");
+  const errorPrice = document.querySelector("#error-price");
+  const errorEmail = document.querySelector("#error-email");
+  const messageContainer = document.querySelector("#output");
 
-  const container = document.querySelector("#output");
-  const loading = newEl("h2", { innerText: "Loading", class: "loading" });
-  container.prepend(loading);
+  if (ValidateUrl(url, errorUrl) && ValidatePrice(targetPrice, errorPrice) && ValidateEmail(email, errorEmail)) {
 
-  fetch("http://localhost:3000/search", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ url, targetPrice, email })
-  })
-    .then(response => response.json())
-    .then(data => {
-      if (data.message) {
-        const header = newEl("h2", { innerText: data.message });
-        container.removeChild(loading);
-        container.prepend(header);
-      } else {
-        const { name, price } = data;
-        const header = newEl("h2", { innerText: "Track started:" });
-        const productName = newEl("span", { innerHTML: `Product: <strong>${name}</strong>` });
-        const currentPrice = newEl("span", { innerHTML: `Current price: <strong>${price} kr</strong>` });
-        const searchPrice = newEl("span", { innerHTML: `Target price: <strong>${targetPrice} kr</strong>` });
-        const emailAdress = newEl("span", { innerHTML: `Email: <strong>${email}</strong>` });
+    const loading = newEl("h2", { innerText: "Loading", class: "loading" });
+    messageContainer.prepend(loading);
 
-        container.removeChild(loading);
-        container.prepend(emailAdress);
-        container.prepend(searchPrice);
-        container.prepend(currentPrice);
-        container.prepend(productName);
-        container.prepend(header);
-      }
+    targetPrice = +targetPrice;
+
+    fetch("http://localhost:3000/search", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ url, targetPrice, email })
     })
-    .catch(error => {
-      console.log(error)
-      const header = newEl("h2", { innerText: "Något gick fel, försök igen senare." });
-      container.removeChild(loading);
-      container.prepend(header);
-    });
+      .then(response => response.json())
+      .then(data => {
+        if (data.message) {
+          const header = newEl("h2", { innerText: data.message });
+          messageContainer.removeChild(loading);
+          messageContainer.prepend(header);
+        } else {
+          const { name, price } = data;
+          const header = newEl("h2", { innerText: "Track started:" });
+          const productName = newEl("span", { innerHTML: `Product: <strong>${name}</strong>` });
+          const currentPrice = newEl("span", { innerHTML: `Current price: <strong>${price} $</strong>` });
+          const searchPrice = newEl("span", { innerHTML: `Target price: <strong>${targetPrice} $</strong>` });
+          const emailAdress = newEl("span", { innerHTML: `Email: <strong>${email}</strong>` });
+
+          messageContainer.removeChild(loading);
+          messageContainer.prepend(emailAdress);
+          messageContainer.prepend(searchPrice);
+          messageContainer.prepend(currentPrice);
+          messageContainer.prepend(productName);
+          messageContainer.prepend(header);
+        }
+      })
+      .catch(error => {
+        const header = newEl("h2", { innerText: "Something went wrong. Try again later." });
+        messageContainer.removeChild(loading);
+        messageContainer.prepend(header);
+      });
+  }
 }
 
 function newEl(type, attrs = {}) {
@@ -59,3 +66,40 @@ function newEl(type, attrs = {}) {
   return el;
 }
 
+function ValidateEmail(inputText, errorMessage) {
+  const mailformat = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+
+  if (inputText.match(mailformat)) {
+    errorMessage.innerText = "";
+    return true;
+  }
+  else {
+    document.querySelector("#email").focus();
+    errorMessage.innerText = "Invalid email address";
+    return false;
+  }
+}
+
+function ValidateUrl(inputText, errorMessage) {
+  if (inputText.includes("https://www.amazon")) {
+    errorMessage.innerText = "";
+    return true;
+  }
+  else {
+    document.querySelector("#url").focus();
+    errorMessage.innerText = "Invalid adress";
+    return false;
+  }
+}
+
+function ValidatePrice(inputText, errorMessage) {
+  if (+inputText > 0) {
+    errorMessage.innerText = "";
+    return true;
+  }
+  else {
+    document.querySelector("#price").focus();
+    errorMessage.innerText = "Price need to be a positive number";
+    return false;
+  }
+}

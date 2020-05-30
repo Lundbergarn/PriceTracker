@@ -42,6 +42,22 @@ input[type="email"] {
   font-size: 1rem;
 }
 
+.error {
+  color: #bb2d2d;
+  height: 35px;
+  transition: 0.25s all ease-in-out;
+  margin: 0;
+  opacity: 1;
+  position: relative;
+  top: 0;
+}
+
+.error:empty {
+  height: 0;
+  opacity: 0;
+  top: -30px;
+}
+
 #submit {
   width: 100%;
   background-color: #13aa52;

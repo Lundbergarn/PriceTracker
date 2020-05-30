@@ -1,6 +1,7 @@
 # setuptourist
 
-dependencies:
-- node v13
-- npm
-- mysql
+cd server
+
+npm install
+
+npm run server

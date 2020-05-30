@@ -14,6 +14,7 @@
     />
     <link rel="stylesheet" href="./style.css" />
   </head>
+
   <body>
     <div id="page-container">
       <header>
@@ -21,7 +22,7 @@
       </header>
 
       <main id="content-wrap">
-        <h2>Add a product to track</h2>
+        <h2>Add a product on Amazon</h2>
         <p>Easy search in secounds</p>
         <form #form>
           <label for="url">Product URL</label>
@@ -29,26 +30,33 @@
             id="url"
             type="text"
             name="product-url"
-            value="https://www.komplett.se/product/1157747/mobil-klockor/mobiltelefoner/apple-iphone-se-128gb-svart"
+            value="https://www.amazon.com/Dell-Optiplex-Processor-Keyboard-Bluetooth/dp/B07NBWF1ZP/ref=sr_1_1?dchild=1&keywords=computer&qid=1588503087&sr=8-1"
+            required
           />
-          <label for="price">Target price</label>
+          <p class="error" id="error-url"></p>
+          <label for="price">Target price $</label>
           <input
             type="number"
-            min="0"
+            required
+            minvalue="1"
             id="price"
+            value="6000"
             name="target-price"
-            value="6500"
           />
+          <p class="error" id="error-price"></p>
           <label for="email">Your Email</label>
           <input
             type="email"
             id="email"
             name="your-email"
             value="Lundberg@gmail.com"
+            required
           />
+          <p class="error" id="error-email"></p>
           <button id="submit">Start tracking price</button>
         </form>
-        <div class="container">
+
+        <div class="container" id="message-container">
           <section id="output"></section>
         </div>
       </main>
