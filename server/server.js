@@ -1,10 +1,10 @@
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
-const nodemailer = require('nodemailer');
-const searchRouter = require('./routes/search');
-const app = express();
 const cors = require('cors');
+const app = express();
+
+const searchRouter = require('./routes/search');
 
 app.use(express.json());
 app.use(cors());
