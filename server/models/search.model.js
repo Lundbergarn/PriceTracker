@@ -3,11 +3,20 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const searchSchema = new Schema({
-  url: { type: String, required: true },
-  targetPrice: { type: Number, required: true },
-  email: { type: String, required: true }
+  url: {
+    type: String,
+    required: true
+  },
+  targetPrice: {
+    type: Number,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true
+  }
 }, {
-  timestamps: true,
+  timestamps: false,
 });
 
 const Search = mongoose.model('Search', searchSchema);

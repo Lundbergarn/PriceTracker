@@ -25,4 +25,4 @@ scrapePage = async (url, targetPrice) => {
 
 module.exports = {
   scrapePage
-}
+};

@@ -71,6 +71,7 @@ scrapeWebPage = async (url, searchPrice, email, id) => {
 
     } catch (error) {
       console.log(error)
+      throw (error);
     }
 
   } else {
@@ -95,7 +96,7 @@ startIntervalScrape = () => {
       }
     }
     // }, 43200000);
-  }, 20000);
+  }, 10000);
   // Shorter interval for demo purpose
 }
 

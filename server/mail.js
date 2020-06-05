@@ -32,16 +32,18 @@ sendMail = (productName, price, searchPrice, email, url) => {
     to: email,
     subject: 'Price tracker',
     html: `
-    <h3>Your previous search has found a match!</h3>
-    <p>${productName}</p>
-    <p>Price: ${price} $</p>
-    <p>Searched price: ${searchPrice} $</p>
-    <span>${url}</span>`
+      <h3>Your previous search has found a match!</h3>
+      <p>${productName}</p>
+      <p>Price: ${price} $</p>
+      <p>Searched price: ${searchPrice} $</p>
+      <span>${url}</span>
+    `
   };
 
   transport.sendMail(message, function (err, info) {
-    if (err) {
-      console.log(err)
+    if (error) {
+      console.error(error)
+      throw (error)
     } else {
       console.log(info);
     }
@@ -50,4 +52,4 @@ sendMail = (productName, price, searchPrice, email, url) => {
 
 module.exports = {
   sendMail
-}
+};
