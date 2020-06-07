@@ -15,6 +15,7 @@ sendMail = (productName, price, searchPrice, email, url) => {
   //   }
   // });
 
+  // Gmail
   const transport = nodemailer.createTransport({
     service: 'gmail',
     auth: {
