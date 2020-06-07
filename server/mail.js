@@ -6,7 +6,7 @@ const gmailPw = require('./config/keys').GooglePassword;
 
 sendMail = (productName, price, searchPrice, email, url) => {
   // Mailtrap
-  // var transport = nodemailer.createTransport({
+  // const transport = nodemailer.createTransport({
   //   host: 'smtp.mailtrap.io',
   //   port: 2525,
   //   auth: {
@@ -15,7 +15,7 @@ sendMail = (productName, price, searchPrice, email, url) => {
   //   }
   // });
 
-  var transport = nodemailer.createTransport({
+  const transport = nodemailer.createTransport({
     service: 'gmail',
     auth: {
       user: gmailAcc,
