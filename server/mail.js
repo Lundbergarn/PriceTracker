@@ -35,8 +35,8 @@ sendMail = (productName, price, searchPrice, email, url) => {
     html: `
       <h3>Your previous search has found a match!</h3>
       <p>${productName}</p>
-      <p>Price: ${price} $</p>
-      <p>Searched price: ${searchPrice} $</p>
+      <p>Price: ${price}</p>
+      <p>Searched price: $${searchPrice.toFixed(2)}</p>
       <span>${url}</span>
     `
   };

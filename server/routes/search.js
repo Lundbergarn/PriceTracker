@@ -27,9 +27,9 @@ router.route('/search').post(async (req, res) => {
     return;
   }
 
-  channelData.price = formatPrice(channelData.price);
+  const currentPrice = formatPrice(channelData.price);
 
-  if (targetPrice >= channelData.price) {
+  if (targetPrice >= currentPrice) {
     res.status(200).send({ message: "Price already achieved." });
   } else {
     const newSearch = new Search({ url, targetPrice, email });
@@ -63,7 +63,7 @@ scrapeWebPage = async (url, searchPrice, email, id) => {
   // Should be bigger than, less than for demo purpose
   if (searchPrice <= currentPrice) {
     console.log('Send mail to ', email);
-    mail.sendMail(productName.trim(), currentPrice, searchPrice, email, url);
+    mail.sendMail(productName.trim(), channelData.price, searchPrice, email, url);
 
     try {
       const searches = await Search.findOneAndDelete({ _id: id });
